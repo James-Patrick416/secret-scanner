@@ -49,9 +49,9 @@ secret-scanner/
    python app.py scan test.txt  
 
 ## DataBase Schema
--users - User information
--scans -Scan history and metadata
--findings- Detected secrets with locations
+- Users - User information
+- Scans -Scan history and metadata
+- Findings- Detected secrets with locations
 
 ## Secret Patterns Detected
 - API keys (e.g AKIA...)
