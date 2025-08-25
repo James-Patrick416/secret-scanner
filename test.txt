@@ -1,0 +1,4 @@
+password = "secret123"
+API_KEY = AKIA1234567890ABCDEF
+random_string = abcdefghijklmnopqrstuvwxyz1234567890
+normal_text = hello world
