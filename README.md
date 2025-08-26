@@ -65,45 +65,42 @@ secret-scanner/
    ```bash
    python ../secret-scanner/app.py scan config/
 
-10. **Example(if secret-scanner is two levels up)**
-   ```bash
-   python ../../secret-scanner/app.py scan .
+10. **Example (if secret-scanner is two levels up)**  
+bash
+python ../../secret-scanner/app.py scan .
 
-
-11. **Using absolute paths (always works)**
-   ```bash
-   python ~/projects/secret-scanner/app.py scan /full/path/to/your/project
+11. **Using absolute paths (always works)**  
+bash
+python ~/projects/secret-scanner/app.py scan /full/path/to/your/project
 
 12. **QUICK START**
-- Navigate to secret-scanner directory run pipenv shell
+- Navigate to `secret-scanner` directory and run `pipenv shell`
 - Navigate to your project while still in the secret-scanner shell
-- run the commands based on the position of your file you want to test as shown with the examples above  
-- view results in terminal and data base
-- works with python, javascript, react(.jsx), config files and any text files!   
-      
-   
-## DataBase Schema
-- Users - User information
-- Scans -Scan history and metadata
-- Findings- Detected secrets with locations
+- Run the commands based on the position of your file you want to test (see examples above)  
+- View results in terminal and database  
+- Works with Python, JavaScript, React (.jsx), config files, and any text files  
+
+---
+
+## Database Schema
+- **Users** – User information  
+- **Scans** – Scan history and metadata  
+- **Findings** – Detected secrets with locations  
 
 ## Secret Patterns Detected
-- API keys (e.g AKIA...)
-- Password assignments (password ="...")
-- 32+ character random strings
+- API keys (e.g., `AKIA...`)  
+- Password assignments (`password="..."`)  
+- 32+ character random strings  
 
 ## Requirements
-- Python 3.9+
-- Pipenv
-- Click
-- SQLALchemy
+- Python 3.9+  
+- Pipenv  
+- Click  
+- SQLAlchemy  
 
 ## Development
 The tool uses:
-- Click for CLI interface
-- SQLAlchemy for ORM and database
-- Pipenv for virtual environment
-- Regex patterns for secret detection
-
-       
-
+- Click for CLI interface  
+- SQLAlchemy for ORM and database  
+- Pipenv for virtual environment  
+- Regex patterns for secret detection  
