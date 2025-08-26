@@ -69,6 +69,7 @@ secret-scanner/
    ```bash
    python ../../secret-scanner/app.py scan .
 
+
 11. **Using absolute paths (always works)**
    ```bash
    python ~/projects/secret-scanner/app.py scan /full/path/to/your/project
