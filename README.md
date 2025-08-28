@@ -95,11 +95,11 @@ secret-scanner/
    python ../secret-scanner/app.py scan config/
 
 15. **Example (if secret-scanner is two levels up)**  
-bash
+   ```bash
 python ../../secret-scanner/app.py scan .
 
 16. **Using absolute paths (always works)**  
-bash
+   ```bash
 python ~/projects/secret-scanner/app.py scan /full/path/to/your/project
 
 17. **QUICK START**
