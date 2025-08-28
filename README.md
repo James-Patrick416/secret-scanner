@@ -1,14 +1,15 @@
 # Secret Scanner 🔍
 
-A Python CLI tool that detects sensitive data (API keys, passwords, tokens) in files and prevents accidental leaks.
+A Python CLI tool that detects sensitive data (API keys, passwords, tokens) in files and prevents accidental leaks, the project demonstrates file scanning, database persistense and CRUD operations
 
 ## Features
 
-- Scans files for hardcoded secrets using regex patterns
+- Detects common secrets in files (password, API_KEY, AWS keys, etc.).
 - Stores scan history in SQLite database
 - CLI interface with Click
 - SQLAlchemy ORM with 3 tables (Users, Scans, Findings)
 - Virtual environment management with Pipenv
+- Support listing, scans, findings and users
 
 ## Project Structure
 secret-scanner/
@@ -43,6 +44,34 @@ secret-scanner/
    ```bash
    python app.py scan path/to/file.txt  
    python app.py scan path/to/folder/
+
+4. **list all  scans**
+   ```bash
+   python app.py scanmgr list
+
+5. **List all findings**
+   ```bash
+   python app.py finding list 
+
+6. ***List users**
+   ```bash
+   python app.py user list
+
+7. **Database(SQLite)**
+   Enter database:
+   ```bash
+   sqlite3 secret_scanner.db 
+
+8. **CRUD Examples(Create)**
+   ```bash
+   INSERT INTO scans (path, type, status, created_at, user_id)
+   VALUES ('demo.txt', 'file', 'pending', datetime('now'), 1);
+
+   SELECT * FROM scans;
+
+   UPDATE scans SET status='archieved' WHERE id=1;
+
+   DELETE FROM findings WHERE id=2;
 
 4. **Example:**
    ```bash
@@ -103,4 +132,4 @@ The tool uses:
 - Click for CLI interface  
 - SQLAlchemy for ORM and database  
 - Pipenv for virtual environment  
-- Regex patterns for secret detection  
+- Regex patterns for secret detection

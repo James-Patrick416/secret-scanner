@@ -8,6 +8,9 @@ def cli():
     """Secret Scanner CLI"""
     pass
 
+# -------------------
+# Existing scan command
+# -------------------
 @cli.command()
 @click.argument('target')
 def scan(target):
@@ -62,3 +65,81 @@ def scan(target):
         click.echo("No secrets found!")
     
     db.close()
+
+
+# -------------------
+# Minimal CRUD commands
+# -------------------
+
+# --- User Commands ---
+@cli.group()
+def user():
+    """Manage users"""
+    pass
+
+@user.command("create")
+@click.argument("username")
+def create_user(username):
+    init_db()
+    user = User.create(username=username)
+    click.echo(f"User created: {user.username} (ID: {user.id})")
+
+@user.command("list")
+def list_users():
+    init_db()
+    users = User.get_all()
+    if not users:
+        click.echo("No users found.")
+    for u in users:
+        click.echo(f"{u.id}: {u.username} (Created {u.created_at})")
+
+@user.command("delete")
+@click.argument("user_id", type=int)
+def delete_user(user_id):
+    User.delete(user_id)
+    click.echo(f"User with ID {user_id} deleted (if existed).")
+
+
+# --- Scan Commands ---
+@cli.group()
+def scanmgr():
+    """Manage scans"""
+    pass
+
+@scanmgr.command("list")
+def list_scans():
+    scans = Scan.get_all()
+    if not scans:
+        click.echo("No scans found.")
+    for s in scans:
+        click.echo(f"{s.id}: Path={s.target_path}, UserID={s.user_id}, Status={s.status}")
+
+@scanmgr.command("delete")
+@click.argument("scan_id", type=int)
+def delete_scan(scan_id):
+    Scan.delete(scan_id)
+    click.echo(f"Scan with ID {scan_id} deleted (if existed).")
+
+
+# --- Finding Commands ---
+@cli.group()
+def finding():
+    """Manage findings"""
+    pass
+
+@finding.command("list")
+def list_findings():
+    findings = Finding.get_all()
+    if not findings:
+        click.echo("No findings found.")
+    for f in findings:
+        click.echo(
+            f"{f.id}: ScanID={f.scan_id}, File={f.file_path}, "
+            f"Line={f.line_number}, Type={f.secret_type}"
+        )
+
+@finding.command("delete")
+@click.argument("finding_id", type=int)
+def delete_finding(finding_id):
+    Finding.delete(finding_id)
+    click.echo(f"Finding with ID {finding_id} deleted (if existed).")
