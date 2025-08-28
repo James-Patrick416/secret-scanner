@@ -78,7 +78,7 @@ secret-scanner/
    python app.py scan test.txt
 
 10. **Basic command structure.**
-   bash
+   ```bash
    python [PATH_TO_SCANNER] scan [TARGET_FILE_OR_FOLDER]
 
 11. **Example(if secret-scanner is in your parent directory)**
