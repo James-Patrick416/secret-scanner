@@ -1,6 +1,32 @@
 # Secret Scanner 🔍
 
-A Python CLI tool that detects sensitive data (API keys, passwords, tokens) in files and prevents accidental leaks, the project demonstrates file scanning, database persistense and CRUD operations
+A Python CLI tool that detects and prevents accidental exposure of sensitive data in code repositories. Designed for developers who want to avoid the catastrophic consequences of leaking API keys, passwords, and tokens into version control or production environments.
+
+Why Developers Need This Tool:
+
+Prevent Security Breaches: Stop sensitive data from accidentally committing to Git or deploying to production
+
+Save Reputation: Avoid public exposure of credentials that could lead to compromised systems and data leaks
+
+Compliance Ready: Meet security standards by ensuring no secrets are hardcoded in your codebase
+
+Developer-Friendly: Simple CLI interface integrates seamlessly into your development workflow
+
+Audit Trail: Maintains scan history and findings in a database for compliance and debugging
+
+Perfect For:
+
+Pre-commit hooks to catch secrets before they're committed
+
+CI/CD pipeline integration for automated scanning
+
+Local development environment checks
+
+Security audits and compliance requirements
+
+Catch what GitGuardian and other external tools might miss by scanning your code before it leaves your local machine.
+
+
 
 ## Features
 
