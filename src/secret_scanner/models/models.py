@@ -1,65 +1,47 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
-from datetime import datetime
-
-Base = declarative_base()
-
-class User(Base):
-    __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    username = Column(String, unique=True, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    scans = relationship('Scan', back_populates='user')
-
-class Scan(Base):
-    __tablename__ = 'scans'
-    id = Column(Integer, primary_key=True)
-    target_path = Column(String, nullable=False)
-    scan_type = Column(String, nullable=False)
-    status = Column(String, default='completed')
-    created_at = Column(DateTime, default=datetime.utcnow)
-    user_id = Column(Integer, ForeignKey('users.id'))
-    user = relationship('User', back_populates='scans')
-    findings = relationship('Finding', back_populates='scan')
-
+# --- SQLAlchemy imports for defining models ---
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from src.secret_scanner.db.database import SessionLocal
 
+# Base class for all models
 Base = declarative_base()
 
-class User(Base):
-    __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    username = Column(String, unique=True, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    scans = relationship('Scan', back_populates='user')
 
-    # --- Minimal ORM helpers ---
+# --- USER MODEL ---
+class User(Base):
+    __tablename__ = 'users'   # maps this class to "users" table in the database
+
+    # Columns = table fields
+    id = Column(Integer, primary_key=True)                       # Primary Key
+    username = Column(String, unique=True, nullable=False)       # Unique username
+    created_at = Column(DateTime, default=datetime.utcnow)       # Auto timestamp
+    scans = relationship('Scan', back_populates='user')          # One-to-many relation: User -> Scans
+
+    # --- ORM Helper methods ---
+    # These methods show SQLAlchemy CRUD operations (Create, Read, Delete)
     @classmethod
     def create(cls, username):
-        db = SessionLocal()
-        user = cls(username=username)
-        db.add(user)
-        db.commit()
-        db.refresh(user)
+        db = SessionLocal()                  # start DB session
+        user = cls(username=username)        # create User object
+        db.add(user)                         # add to DB session
+        db.commit()                          # save changes
+        db.refresh(user)                     # refresh with DB state
         db.close()
         return user
 
     @classmethod
     def get_all(cls):
         db = SessionLocal()
-        users = db.query(cls).all()
+        users = db.query(cls).all()          # SELECT * FROM users
         db.close()
         return users
 
     @classmethod
     def find_by_id(cls, user_id):
         db = SessionLocal()
-        user = db.query(cls).filter_by(id=user_id).first()
+        user = db.query(cls).filter_by(id=user_id).first()   # SELECT * WHERE id = ?
         db.close()
         return user
 
@@ -68,23 +50,25 @@ class User(Base):
         db = SessionLocal()
         user = db.query(cls).filter_by(id=user_id).first()
         if user:
-            db.delete(user)
+            db.delete(user)   # DELETE user
             db.commit()
         db.close()
 
 
+# --- SCAN MODEL ---
 class Scan(Base):
-    __tablename__ = 'scans'
-    id = Column(Integer, primary_key=True)
-    target_path = Column(String, nullable=False)
-    scan_type = Column(String, nullable=False)
-    status = Column(String, default='completed')
-    created_at = Column(DateTime, default=datetime.utcnow)
-    user_id = Column(Integer, ForeignKey('users.id'))
-    user = relationship('User', back_populates='scans')
-    findings = relationship('Finding', back_populates='scan')
+    __tablename__ = 'scans'   # maps to "scans" table
 
-    # --- Minimal ORM helpers ---
+    id = Column(Integer, primary_key=True)
+    target_path = Column(String, nullable=False)    # Path scanned
+    scan_type = Column(String, nullable=False)      # e.g. "secrets", "vulnerabilities"
+    status = Column(String, default='completed')    # scan status
+    created_at = Column(DateTime, default=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey('users.id'))   # Foreign Key → users.id
+    user = relationship('User', back_populates='scans') # Many-to-one: Scan -> User
+    findings = relationship('Finding', back_populates='scan') # One-to-many: Scan -> Findings
+
+    # CRUD helper methods
     @classmethod
     def create(cls, target_path, scan_type, user_id):
         db = SessionLocal()
@@ -119,18 +103,20 @@ class Scan(Base):
         db.close()
 
 
+# --- FINDING MODEL ---
 class Finding(Base):
-    __tablename__ = 'findings'
-    id = Column(Integer, primary_key=True)
-    scan_id = Column(Integer, ForeignKey('scans.id'))
-    file_path = Column(String, nullable=False)
-    line_number = Column(Integer)
-    secret_type = Column(String, nullable=False)
-    secret_value = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    scan = relationship('Scan', back_populates='findings')
+    __tablename__ = 'findings'   # maps to "findings" table
 
-    # --- Minimal ORM helpers ---
+    id = Column(Integer, primary_key=True)
+    scan_id = Column(Integer, ForeignKey('scans.id'))   # Foreign Key → scans.id
+    file_path = Column(String, nullable=False)          # file where secret found
+    line_number = Column(Integer)                       # line number in file
+    secret_type = Column(String, nullable=False)        # e.g. "API Key"
+    secret_value = Column(String, nullable=False)       # the actual secret
+    created_at = Column(DateTime, default=datetime.utcnow)
+    scan = relationship('Scan', back_populates='findings') # Many-to-one: Finding -> Scan
+
+    # CRUD helper methods
     @classmethod
     def create(cls, scan_id, file_path, line_number, secret_type, secret_value):
         db = SessionLocal()
